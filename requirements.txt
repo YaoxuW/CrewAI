@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+pydantic
+requests
+crewai
+crewai_tools
