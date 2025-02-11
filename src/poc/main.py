@@ -1,15 +1,17 @@
-#!/usr/bin/env python
 import sys
 import warnings
 
 from datetime import datetime
 from fastapi import FastAPI, HTTPException
+from dotenv import load_dotenv
 
 from .models import AgentCreateRequest, TaskCreateRequest
 from .crew import Poc
 from crewai import Agent, Crew, Task, Process
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
+
+load_dotenv()
 
 app = FastAPI()
 
@@ -69,7 +71,7 @@ def create_task(request: TaskCreateRequest):
         agent=target_agent,
     )
 
-    global_crew.add_task(new_task)
+    global_crew.tasks.append(new_task)
     return {"message": f"Task created for agent '{target_agent.role}'."}
 
 
@@ -90,7 +92,8 @@ def list_tasks():
 @app.post("/crew/run")
 def run():
     try:
-        crew_output = Poc().crew().kickoff()
+        crew_output = global_crew.kickoff()
         print(f"Raw Output: {crew_output.raw}")
+        return {"message": "Crew run completed", "raw_output": crew_output.raw}
     except Exception as e:
         raise Exception(f"An error occurred while running the crew: {e}")

@@ -4,8 +4,8 @@ from typing import List, Optional
 class AgentCreateRequest(BaseModel):
     role: str
     goal: str
-    background: Optional[str] = None
-    version: bool = True
+    backstory: Optional[str] = None
+    verbose: bool = True
 
 class TaskCreateRequest(BaseModel):
     description: str
